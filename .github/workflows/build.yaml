@@ -16,6 +16,8 @@ jobs:
   build:
     name: Build ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
+    env:
+      OS: ${{ matrix.config.name }}
     strategy:
       matrix:
         config:
@@ -36,6 +38,6 @@ jobs:
       - name: Display the Matrix Info
         shell: pwsh
         run: |
-          Write-Output "The OS is ${{ matrix.config.os }}"
+          Write-Output "The OS is ${{ matrix.config.os }} ${env:OS}"
           Write-Output "The name is ${{matrix.config.name}}"
           Write-Output "The name is ${{ matrix.config.name }}"
