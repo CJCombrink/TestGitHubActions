@@ -31,7 +31,7 @@ jobs:
 
       - name: Display the path
         shell: pwsh
-        run: echo ${env:PATH}
+        run: echo ${env:PATH} ${runner.os} ${{ runner.os }}
         
       - name: Display the Matrix Info
         shell: pwsh
