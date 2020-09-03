@@ -33,11 +33,25 @@ jobs:
 
       - name: Display the path
         shell: pwsh
-        run: echo ${env:PATH} ${runner.os} ${{ runner.os }}
+        run: echo ${env:PATH}
         
       - name: Display the Matrix Info
         shell: pwsh
         run: |
-          Write-Output "The OS is ${{ matrix.config.os }} ${env:OS}..."
-          Write-Output "The name is ${{matrix.config.name}}"
-          Write-Output "The name is ${{ matrix.config.name }}"
+          Write-Output "<+> Matrix info: "
+          Write-Output "  <-> Name: ${{matrix.config.name}}"
+          Write-Output "  <-> OS  : ${{matrix.config.os}}"
+          
+      - name: Setup MSBuild
+        if: runner.os == 'Windows'
+        uses: microsoft/setup-msbuild@v1.0.1
+          
+      - name: Test MSBuild
+        if: runner.os == 'Windows'
+        run: |
+          msbuild -version
+          
+      - name: Test MSBuild
+        if: runner.os != 'Windows'
+        run: |
+          make --version
