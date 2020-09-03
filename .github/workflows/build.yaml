@@ -21,10 +21,10 @@ jobs:
     strategy:
       matrix:
         config:
-          - { name: "win64", os: windows-latest }
-          - { name: "win32", os: windows-latest }
-          - { name: "linux", os: ubuntu-16.04 }
-          - { name: "macos", os: macos-latest }
+          - { name: "win64", os: windows-latest, hunspell: "hunspell:x64-windows-static" }
+          - { name: "win32", os: windows-latest, hunspell: "hunspell:x86-windows-static" }
+          - { name: "linux", os: ubuntu-16.04, hunspell: "hunspell" }
+          - { name: "macos", os: macos-latest, hunspell: "hunspell" }
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -51,7 +51,12 @@ jobs:
         run: |
           msbuild -version
           
-      - name: Test MSBuild
+      - name: Test Make
         if: runner.os != 'Windows'
         run: |
           make --version
+          
+      - name: Vcpkg - Hunspell
+        uses: lukka/run-vcpkg@v3
+        with:
+          vcpkgArguments: ${{matrix.config.hunspell}}
