@@ -83,9 +83,10 @@ jobs:
           ${QTC_PACKAGES} = "qtcreator", "qtcreator_dev"
           foreach (${QTC_PACKAGE} in ${QTC_PACKAGES}) {
             Write-Output "<+> Downloading Package: ${QTC_PACKAGE}"
-            ${QTC_URL} = "${QTC_BASE_URL}/installer_source/${{matrix.config.qtc_platform}}/${QTC_PACKAGE}.7z"
-            (New-Object System.Net.WebClient).DownloadFile(${QTC_URL}, ${QTC_PACKAGE}.7z)
-            7z x "${QTC_PACKAGE}.7z" -aoa -o"qtcreator"
+            ${QTC_7Z} = "${QTC_PACKAGE}.7z"
+            ${QTC_URL} = "${QTC_BASE_URL}/installer_source/${{matrix.config.qtc_platform}}/${QTC_7Z}"
+            (New-Object System.Net.WebClient).DownloadFile("${QTC_URL}", "${QTC_7Z}")
+            7z x "${QTC_7Z}" -aoa -o"qtcreator"
           }
             
             
