@@ -19,7 +19,7 @@ jobs:
     env:
       OS: ${{ matrix.config.name }}
       QT_VERSION: "5.15.0"
-      QT_CREATOR_VERSION: "4.12"
+      QT_CREATOR_VERSION: "4.13"
     strategy:
       matrix:
         config:
@@ -63,19 +63,6 @@ jobs:
         with:
           vcpkgArguments: ${{matrix.config.hunspell}}
           vcpkgGitCommitId: 56fffbe49dfb4dd8fae0940f272c5fd2b86be991
-    
-      - name: Set 7z
-        shell: pwsh
-        run: |
-          switch ( ${env:OS} ) {
-            'Windows' {
-              ${z7Dir} = @(Get-ChildItem -Path ${env:VCPKG_ROOT} -Filter 7za.exe -Recurse |Select-Object -Last 1).DirectoryName 
-              ${z7Dir}
-              ${env:PATH} = "${z7Dir};${env:PATH}"
-              Copy-Item -Path "${z7Dir}\7za.exe" -Destination "${z7Dir}\7z.exe"
-            }
-          }
-          7z
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v2
@@ -88,4 +75,22 @@ jobs:
         run: |
           qmake --version
           
-         
+      - name: Donwload Qt Creator
+        shell: pwsh
+        run: |
+          ${QTC_BASE_URL} = "https://download.qt.io/official_releases/qtcreator/${env:QT_CREATOR_VERSION}/${env:QT_CREATOR_VERSION}.0"
+          
+          ${QTC_PACKAGES} = "qtcreator", "qtcreator_dev"
+          foreach (${QTC_PACKAGE} in ${QTC_PACKAGES}) {
+            Write-Output "<+> Downloading Package: ${QTC_PACKAGE}"
+            ${QTC_URL} = "${QTC_BASE_URL}/installer_source/${{matrix.config.qtc_platform}}/${QTC_PACKAGE}.7z"
+            (New-Object System.Net.WebClient).DownloadFile(${QTC_URL}, ${QTC_PACKAGE}.7z)
+            7z x "${QTC_PACKAGE}.7z" -aoa -o"qtcreator"
+          }
+            
+            
+            
+            
+            
+            
+            
