@@ -57,6 +57,19 @@ jobs:
         if: runner.os != 'Windows'
         run: |
           make --version
+      
+      - name: Set 7z
+        shell: pwsh
+        run: |
+          switch ( ${{runner.os}} ) {
+            'Windows' {
+              ${z7Dir} = @(Get-ChildItem -Path . -Filter 7za.exe -Recurse |Select-Object -Last 1).DirectoryName 
+              ${z7Dir}
+              ${env:PATH} = "${z7Dir};${env:PATH}"
+              Copy-Item -Path "${z7Dir}\7za.exe" -Destination "${z7Dir}\7z.exe"
+            }
+          }
+          7z
           
       - name: Vcpkg - Hunspell
         uses: lukka/run-vcpkg@v3
@@ -74,18 +87,5 @@ jobs:
         shell: pwsh
         run: |
           qmake --version
-          
-      - name: Set 7z
-        shell: pwsh
-        run: |
-          switch ( ${{mrunner.os}} ) {
-            'Windows' {
-              ${z7Dir} = @(Get-ChildItem -Path . -Filter 7za.exe -Recurse |Select-Object -Last 1).DirectoryName 
-              ${z7Dir}
-              ${env:PATH} = "${z7Dir};${env:PATH}"
-              Copy-Item -Path "${z7Dir}\7za.exe" -Destination "${z7Dir}\7z.exe"
-            }
-          }
-          7z
           
          
