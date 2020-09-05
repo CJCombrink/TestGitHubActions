@@ -34,17 +34,17 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      - name: Display the path
-        shell: pwsh
-        run: echo ${env:PATH}
-
-      - name: Display the Matrix Info
-        shell: pwsh
-        run: |
-          Write-Output "<+> Matrix info: "
-          Write-Output "  <-> Name: ${{matrix.config.name}}"
-          Write-Output "  <-> OS  : ${{matrix.config.os}}"
-
+#      - name: Display the path
+#        shell: pwsh
+#        run: echo ${env:PATH}
+#
+#      - name: Display the Matrix Info
+#        shell: pwsh
+#        run: |
+#          Write-Output "<+> Matrix info: "
+#          Write-Output "  <-> Name: ${{matrix.config.name}}"
+#          Write-Output "  <-> OS  : ${{matrix.config.os}}"
+#
 #      - name: Setup MSBuild
 #        if: runner.os == 'Windows'
 #        uses: microsoft/setup-msbuild@v1.0.1
@@ -55,12 +55,12 @@ jobs:
 #        run: |
 #          msbuild -version
 #          cl
-
-      - name: Test Make
-        if: runner.os != 'Windows'
-        shell: pwsh
-        run: |
-          make --version
+#
+#      - name: Test Make
+#        if: runner.os != 'Windows'
+#        shell: pwsh
+#        run: |
+#          make --version
 
       - name: Vcpkg - Hunspell
         uses: lukka/run-vcpkg@v3
@@ -68,16 +68,10 @@ jobs:
           vcpkgArguments: ${{matrix.config.hunspell}}
           vcpkgGitCommitId: 56fffbe49dfb4dd8fae0940f272c5fd2b86be991
 
-      - name: Install Qt
-        uses: jurplel/install-qt-action@v2
-        with:
-          version: ${{env.QT_VERSION}}
-          arch: ${{matrix.config.qt_arch}}
-
-      - name: Test Qt
-        shell: pwsh
-        run: |
-          qmake --version
+#      - name: Test Qt
+#        shell: pwsh
+#        run: |
+#          qmake --version
 
       - name: Donwload Qt Creator
         shell: pwsh
@@ -121,6 +115,12 @@ jobs:
           Write-Output "::set-env name=QTC_BIN_DIR::${{github.workspace}}/qtcreator/bin"
           Write-Output "::set-env name=QTC_SOURCE::${{github.workspace}}/qtcreator"
           Write-Output "::set-env name=QTC_BUILD::${{github.workspace}}/qtcreator"
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v2
+        with:
+          version: ${{env.QT_VERSION}}
+          arch: ${{matrix.config.qt_arch}}
 
       - name: Checkout Plugin
         uses: actions/checkout@v2
