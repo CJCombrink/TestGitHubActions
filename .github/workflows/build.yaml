@@ -172,7 +172,7 @@ jobs:
                 New-Item -ItemType Directory "qtcreator/bin"
                 Get-ChildItem qtcreator/ | Format-Table
                 New-Item -ItemType Junction -Name "${{github.workspace}}/qtcreator/bin/Qt Creator.app" -Target "${{github.workspace}}/qtcreator/Qt Creator.app"
-                Get-ChildItem qtcreator/bin | Format-Table
+                Get-ChildItem "qtcreator/bin" | Format-Table
                 Get-ChildItem "qtcreator/bin/Qt Creator.app" | Format-Table
               }
               Default {}
