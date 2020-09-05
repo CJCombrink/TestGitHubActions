@@ -101,6 +101,13 @@ jobs:
           }
 
           Write-Output "::set-env name=QTC_BIN_DIR::qtcreator/bin"
+          Write-Output "::set-env name=QTC_SOURCE::qtcreator"
+          Write-Output "::set-env name=QTC_BUILD::qtcreator"
+
+      - name: Checkout Plugin
+        uses: actions/checkout@v2
+        with:
+          repository: CJCombrink/SpellChecker-Plugin
 
       - name: Build Plugin
         shell: pwsh
@@ -115,9 +122,5 @@ jobs:
               }
           }
 
-          & ${MAKE_CMD} --version
-
-      - name: Checkout Plugin
-        uses: actions/checkout@v2
-        with:
-          repository: CJCombrink/SpellChecker-Plugin
+          Get-ChildItem "${VCPKG_ROOT}/installed"
+          qmake "SpellChecker-Plugin\spellchecker.pro" "LOCAL_HUNSPELL_SRC_DIR=${VCPKG_ROOT}/installed/"
