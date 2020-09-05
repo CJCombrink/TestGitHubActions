@@ -155,5 +155,5 @@ jobs:
           # Workaround for missing file, Need to fix this
           New-Item -Type File "SpellChecker-Plugin\spellchecker_local_paths.pri"
 
-          qmake "SpellChecker-Plugin\spellchecker.pro" "LOCAL_HUNSPELL_SRC_DIR=${HUNSPELL_SRC}" "LOCAL_HUNSPELL_LIB_DIR=${HUNSPELL_LIB} ${QMAKE_EXTRA_ARGS}
+          qmake "SpellChecker-Plugin\spellchecker.pro" "LOCAL_HUNSPELL_SRC_DIR=${HUNSPELL_SRC}" "LOCAL_HUNSPELL_LIB_DIR=${HUNSPELL_LIB}" ${QMAKE_EXTRA_ARGS}
           & "${MAKE_CMD}"
