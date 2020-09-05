@@ -99,3 +99,21 @@ jobs:
             Write-Output "  <-> Extracting archive"
             7z x "${QTC_7Z}" -aoa -o"qtcreator"
           }
+
+          Write-Output "::set-env name=QTC_BIN_DIR::qtcreator/bin"
+
+      - name: Build Plugin
+        shell: pwsh
+        run: |
+          switch ("${{runner.os}}")
+          {
+              "Windows" {
+                  ${MAKE_CMD} = "${env:QTC_BIN_DIR}/jom
+              }
+              Default {
+                  ${PROCS} = (Get-CimInstance Win32_ComputerSystem).NumberOfLogicalProcessors
+                  ${MAKE_CMD} = make -j ${PROCS}
+              }
+          }
+
+          ${MAKE_CMD} --version
