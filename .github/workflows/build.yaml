@@ -36,28 +36,28 @@ jobs:
       - name: Display the path
         shell: pwsh
         run: echo ${env:PATH}
-        
+
       - name: Display the Matrix Info
         shell: pwsh
         run: |
           Write-Output "<+> Matrix info: "
           Write-Output "  <-> Name: ${{matrix.config.name}}"
           Write-Output "  <-> OS  : ${{matrix.config.os}}"
-          
+
       - name: Setup MSBuild
         if: runner.os == 'Windows'
         uses: microsoft/setup-msbuild@v1.0.1
-          
+
       - name: Test MSBuild
         if: runner.os == 'Windows'
         run: |
           msbuild -version
-          
+
       - name: Test Make
         if: runner.os != 'Windows'
         run: |
           make --version
-          
+
       - name: Vcpkg - Hunspell
         uses: lukka/run-vcpkg@v3
         with:
@@ -69,30 +69,25 @@ jobs:
         with:
           version: ${{env.QT_VERSION}}
           arch: ${{matrix.config.qt_arch}}
-          
+
       - name: Test Qt
         shell: pwsh
         run: |
           qmake --version
-          
+
       - name: Donwload Qt Creator
         shell: pwsh
         run: |
           ${QTC_BASE_URL} = "https://download.qt.io/official_releases/qtcreator/${env:QT_CREATOR_VERSION}/${env:QT_CREATOR_VERSION}.0"
-          
+
           ${QTC_PACKAGES} = "qtcreator", "qtcreator_dev"
           foreach (${QTC_PACKAGE} in ${QTC_PACKAGES}) {
             Write-Output "<+> Downloading Package: ${QTC_PACKAGE}"
             ${QTC_7Z} = "${QTC_PACKAGE}.7z"
             ${QTC_URL} = "${QTC_BASE_URL}/installer_source/${{matrix.config.qtc_platform}}/${QTC_7Z}"
             Write-Output "  <-> URL: ${QTC_URL}"
-            Invoke-WebRequest -Uri "${QTC_URL}" -OutFile "${QTC_7Z}"
+            ${QTC_URL_RESOLVED} = [System.Net.HttpWebRequest]::Create("${QTC_URL}").GetResponse().ResponseUri.AbsoluteUri
+            Write-Output "  <-> Resolved URL: ${QTC_URL_RESOLVED}"
+            Invoke-WebRequest -Uri "${QTC_URL_RESOLVED}" -OutFile "${QTC_7Z}"
             7z x "${QTC_7Z}" -aoa -o"qtcreator"
           }
-            
-            
-            
-            
-            
-            
-            
