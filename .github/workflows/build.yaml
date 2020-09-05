@@ -78,6 +78,7 @@ jobs:
       - name: Donwload Qt Creator
         shell: pwsh
         run: |
+          $PSVersionTable
           ${QTC_BASE_URL} = "https://download.qt.io/official_releases/qtcreator/${env:QT_CREATOR_VERSION}/${env:QT_CREATOR_VERSION}.0"
 
           ${QTC_PACKAGES} = "qtcreator", "qtcreator_dev"
