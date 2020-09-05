@@ -117,7 +117,7 @@ jobs:
 
           & ${MAKE_CMD} --version
 
-        - name: Checkout Plugin
-          uses: actions/checkout@v2
-          with:
-            repository: CJCombrink/SpellChecker-Plugin
+      - name: Checkout Plugin
+        uses: actions/checkout@v2
+        with:
+          repository: CJCombrink/SpellChecker-Plugin
