@@ -23,10 +23,10 @@ jobs:
     strategy:
       matrix:
         config:
-          - { name: "win64", os: windows-latest, hunspell: "hunspell:x64-windows-static", qt_arch: "win64_msvc2019_64", qtc_platform: "windows_x64"}
-          - { name: "win32", os: windows-latest, hunspell: "hunspell:x86-windows-static", qt_arch: "win32_msvc2019",    qtc_platform: "windows_x86"}
-          - { name: "linux", os: ubuntu-16.04,   hunspell: "hunspell",                    qt_arch: "",                  qtc_platform: "linux_x64"}
-          - { name: "macos", os: macos-latest,   hunspell: "hunspell",                    qt_arch: "",                  qtc_platform: "mac_x64"}
+          - { name: "win64", os: windows-latest, hunspell: "hunspell:x64-windows", qt_arch: "win64_msvc2019_64", qtc_platform: "windows_x64"}
+          - { name: "win32", os: windows-latest, hunspell: "hunspell:x86-windows", qt_arch: "win32_msvc2019",    qtc_platform: "windows_x86"}
+          - { name: "linux", os: ubuntu-16.04,   hunspell: "hunspell",             qt_arch: "",                  qtc_platform: "linux_x64"}
+          - { name: "macos", os: macos-latest,   hunspell: "hunspell",             qt_arch: "",                  qtc_platform: "mac_x64"}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -122,5 +122,5 @@ jobs:
               }
           }
 
-          Get-ChildItem "${env:VCPKG_ROOT}/installed"
-          qmake "SpellChecker-Plugin\spellchecker.pro" "LOCAL_HUNSPELL_SRC_DIR=${env:VCPKG_ROOT}/installed/"
+          Get-ChildItem "${env:VCPKG_ROOT}" -Recurse
+          # qmake "SpellChecker-Plugin\spellchecker.pro" "LOCAL_HUNSPELL_SRC_DIR=${env:VCPKG_ROOT}/installed/"
