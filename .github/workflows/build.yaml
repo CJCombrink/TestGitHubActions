@@ -122,8 +122,14 @@ jobs:
               }
           }
 
-          $VCPKG_ROOT/vcpkg list
+          pwd
+          Get-ChildItem .
 
-          Write-Output "VCPKG_ROOT: ${env:VCPKG_ROOT}"
-          Get-ChildItem "${env:VCPKG_ROOT}"
-          # qmake "SpellChecker-Plugin\spellchecker.pro" "LOCAL_HUNSPELL_SRC_DIR=${env:VCPKG_ROOT}/installed/"
+          # ${env:VCPKG_ROOT}/vcpkg list
+
+          # Write-Output "VCPKG_ROOT: ${env:VCPKG_ROOT}"
+          # Get-ChildItem "${env:VCPKG_ROOT}"
+          # ${VCPKG_INSTALLED} = "${env:VCPKG_ROOT}/installed/${{matrix.config.arch}}-${{matrix.config.sys}}"
+          # ${HUNSPELL_SRC} = "${VCPKG_INSTALLED}/include"
+          # ${HUNSPELL_LIB} = "${VCPKG_INSTALLED}/lib"
+          # qmake "SpellChecker-Plugin\spellchecker.pro" "LOCAL_HUNSPELL_SRC_DIR=${HUNSPELL_SRC}" "LOCAL_HUNSPELL_LIB_DIR=${HUNSPELL_LIB}"
