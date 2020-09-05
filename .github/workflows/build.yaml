@@ -169,9 +169,13 @@ jobs:
                 Write-Output "::set-env name=JOM_DIR::${{github.workspace}}/jom"
               }
               "macOS" {
+                Write-Out "<+> Creating bin folder..."
                 New-Item -ItemType Directory "qtcreator/bin"
+                Write-Out "<+> Contents of qtcreator..."
                 Get-ChildItem qtcreator/ | Format-Table
+                Write-Out "<+> Creating junction..."
                 New-Item -ItemType Junction -Name "${{github.workspace}}/qtcreator/bin/Qt Creator.app" -Target "${{github.workspace}}/qtcreator/Qt Creator.app"
+                Write-Out "<+> Contents of bin folder..."
                 Get-ChildItem "qtcreator/bin" | Format-Table
                 Get-ChildItem "qtcreator/bin/Qt Creator.app" | Format-Table
               }
