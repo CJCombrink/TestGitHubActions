@@ -169,9 +169,11 @@ jobs:
                 Write-Output "::set-env name=JOM_DIR::${{github.workspace}}/jom"
               }
               "macOS" {
-                New-Item -Type File "qtcreator/bin"
+                New-Item -ItemType Directory "qtcreator/bin"
                 Get-ChildItem qtcreator/ | Format-Table
                 New-Item -ItemType Junction -Name "${{github.workspace}}/qtcreator/bin/Qt Creator.app" -Target "${{github.workspace}}/qtcreator/Qt Creator.app"
+                Get-ChildItem qtcreator/bin | Format-Table
+                Get-ChildItem "qtcreator/bin/Qt Creator.app" | Format-Table
               }
               Default {}
           }
@@ -214,7 +216,7 @@ jobs:
           }
 
           # Workaround for missing file, Need to fix this
-          New-Item -Type File "SpellChecker-Plugin\spellchecker_local_paths.pri"
+          New-Item -ItemType File "SpellChecker-Plugin\spellchecker_local_paths.pri"
 
           qmake "SpellChecker-Plugin\spellchecker.pro" "LOCAL_HUNSPELL_SRC_DIR=${HUNSPELL_SRC}" "LOCAL_HUNSPELL_LIB_DIR=${HUNSPELL_LIB}" ${QMAKE_EXTRA_ARGS}
           & "${MAKE_CMD}"
