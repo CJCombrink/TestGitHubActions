@@ -122,5 +122,5 @@ jobs:
               }
           }
 
-          Get-ChildItem "${VCPKG_ROOT}/installed"
-          qmake "SpellChecker-Plugin\spellchecker.pro" "LOCAL_HUNSPELL_SRC_DIR=${VCPKG_ROOT}/installed/"
+          Get-ChildItem "${env:VCPKG_ROOT}/installed"
+          qmake "SpellChecker-Plugin\spellchecker.pro" "LOCAL_HUNSPELL_SRC_DIR=${env:VCPKG_ROOT}/installed/"
