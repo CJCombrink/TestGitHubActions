@@ -44,16 +44,16 @@ jobs:
           Write-Output "  <-> Name: ${{matrix.config.name}}"
           Write-Output "  <-> OS  : ${{matrix.config.os}}"
 
-      - name: Setup MSBuild
-        if: runner.os == 'Windows'
-        uses: microsoft/setup-msbuild@v1.0.1
-
-      - name: Test MSBuild
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          msbuild -version
-          cl
+#      - name: Setup MSBuild
+#        if: runner.os == 'Windows'
+#        uses: microsoft/setup-msbuild@v1.0.1
+#
+#      - name: Test MSBuild
+#        if: runner.os == 'Windows'
+#        shell: pwsh
+#        run: |
+#          msbuild -version
+#          cl
 
       - name: Test Make
         if: runner.os != 'Windows'
@@ -119,6 +119,12 @@ jobs:
           switch ("${{runner.os}}")
           {
               "Windows" {
+                  Write-Output "<+> Setting up MSBuild"
+                  # https://github.com/microsoft/terminal/issues/3821#issuecomment-651506501
+                  ${VS_INST_PATH} = & "${env:ProgramFiles(x86)}/Microsoft Visual Studio/Installer/vswhere.exe" -latest -property installationPath
+                  Write-Output "  <-> VS Install Path: ${VS_INST_PATH}"
+                  Import-Module ${VS_INST_PATH}/Common7/Tools/Microsoft.VisualStudio.DevShell.dll
+                  Enter-VsDevShell -VS_INST_PATH $VS_INST_PATH -SkipAutomaticLocation
                   ${MAKE_CMD} = "${env:QTC_BIN_DIR}/jom"
               }
               Default {
@@ -133,3 +139,4 @@ jobs:
           ${HUNSPELL_SRC} = "${VCPKG_INSTALLED}/include"
           ${HUNSPELL_LIB} = "${VCPKG_INSTALLED}/lib"
           qmake "SpellChecker-Plugin\spellchecker.pro" "LOCAL_HUNSPELL_SRC_DIR=${HUNSPELL_SRC}" "LOCAL_HUNSPELL_LIB_DIR=${HUNSPELL_LIB}"
+          & "${MAKE_CMD}"
