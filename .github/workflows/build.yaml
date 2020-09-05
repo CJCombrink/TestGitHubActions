@@ -117,6 +117,10 @@ jobs:
       - name: Build Plugin
         shell: pwsh
         run: |
+          ${VCPKG_INSTALLED} = "${env:VCPKG_ROOT}/installed/${{matrix.config.arch}}-${{matrix.config.sys}}"
+          ${HUNSPELL_SRC} = "${VCPKG_INSTALLED}/include"
+          ${HUNSPELL_LIB} = "${VCPKG_INSTALLED}/lib"
+
           switch ("${{runner.os}}")
           {
               "Windows" {
@@ -130,14 +134,12 @@ jobs:
               }
               Default {
                   ${MAKE_CMD} = "make"
+                  ${QMAKE_EXTRA_ARGS} = "HUNSPELL_STATIC_LIB=$${HUNSPELL_LIB}/liblibhunspell.a"
               }
           }
 
           # Workaround for missing file, Need to fix this
           New-Item -Type File "SpellChecker-Plugin\spellchecker_local_paths.pri"
 
-          ${VCPKG_INSTALLED} = "${env:VCPKG_ROOT}/installed/${{matrix.config.arch}}-${{matrix.config.sys}}"
-          ${HUNSPELL_SRC} = "${VCPKG_INSTALLED}/include"
-          ${HUNSPELL_LIB} = "${VCPKG_INSTALLED}/lib"
-          qmake "SpellChecker-Plugin\spellchecker.pro" "LOCAL_HUNSPELL_SRC_DIR=${HUNSPELL_SRC}" "LOCAL_HUNSPELL_LIB_DIR=${HUNSPELL_LIB}"
+          qmake "SpellChecker-Plugin\spellchecker.pro" "LOCAL_HUNSPELL_SRC_DIR=${HUNSPELL_SRC}" "LOCAL_HUNSPELL_LIB_DIR=${HUNSPELL_LIB} ${QMAKE_EXTRA_ARGS}
           & "${MAKE_CMD}"
