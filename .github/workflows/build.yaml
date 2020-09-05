@@ -52,6 +52,7 @@ jobs:
         if: runner.os == 'Windows'
         run: |
           msbuild -version
+          cl
 
       - name: Test Make
         if: runner.os != 'Windows'
