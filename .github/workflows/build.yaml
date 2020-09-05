@@ -86,7 +86,7 @@ jobs:
             ${QTC_7Z} = "${QTC_PACKAGE}.7z"
             ${QTC_URL} = "${QTC_BASE_URL}/installer_source/${{matrix.config.qtc_platform}}/${QTC_7Z}"
             Write-Output "  <-> URL: ${QTC_URL}"
-            (New-Object System.Net.WebClient).DownloadFile("${QTC_URL}", "${QTC_7Z}")
+            Invoke-WebRequest -Uri "${QTC_URL}" -OutFile "${QTC_7Z}"
             7z x "${QTC_7Z}" -aoa -o"qtcreator"
           }
             
