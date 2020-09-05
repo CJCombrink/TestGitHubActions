@@ -100,9 +100,9 @@ jobs:
             7z x "${QTC_7Z}" -aoa -o"qtcreator"
           }
 
-          Write-Output "::set-env name=QTC_BIN_DIR::qtcreator/bin"
-          Write-Output "::set-env name=QTC_SOURCE::qtcreator"
-          Write-Output "::set-env name=QTC_BUILD::qtcreator"
+          Write-Output "::set-env name=QTC_BIN_DIR::${{github.workspace}}/qtcreator/bin"
+          Write-Output "::set-env name=QTC_SOURCE::${{github.workspace}}/qtcreator"
+          Write-Output "::set-env name=QTC_BUILD::${{github.workspace}}/qtcreator"
 
       - name: Checkout Plugin
         uses: actions/checkout@v2
@@ -122,6 +122,9 @@ jobs:
                   ${MAKE_CMD} = "make"
               }
           }
+
+          # Workaround for missing file, Need to fix this
+          New-Item -Type File "SpellChecker-Plugin\spellchecker_local_paths.pri"
 
           ${VCPKG_INSTALLED} = "${env:VCPKG_ROOT}/installed/${{matrix.config.arch}}-${{matrix.config.sys}}"
           ${HUNSPELL_SRC} = "${VCPKG_INSTALLED}/include"
