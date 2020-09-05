@@ -169,7 +169,8 @@ jobs:
               }
               "macOS" {
                 New-Item -Type File "qtcreator/bin"
-                New-Item -ItemType SymbolicLink -Name "${{github.workspace}}/qtcreator/bin/Qt Creator.app" -Target "${{github.workspace}}/qtcreator/Qt Creator.app"
+                Get-ChildItem qtcreator/ | Format-Table
+                New-Item -ItemType Junction -Name "${{github.workspace}}/qtcreator/bin/Qt Creator.app" -Target "${{github.workspace}}/qtcreator/Qt Creator.app"
               }
               Default {}
           }
