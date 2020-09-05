@@ -27,6 +27,7 @@ jobs:
           - { name: "win32", os: windows-latest, sys: "windows", arch: "x86", hunspell: "hunspell:x86-windows", qt_arch: "win32_msvc2019",    qtc_platform: "windows_x86"}
           - { name: "linux", os: ubuntu-16.04,   sys: "linux",   arch: "x64", hunspell: "hunspell",             qt_arch: "",                  qtc_platform: "linux_x64"}
           - { name: "macos", os: macos-latest,   sys: "macos",   arch: "x64", hunspell: "hunspell",             qt_arch: "",                  qtc_platform: "mac_x64"}
+      fail-fast: false
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -139,4 +140,4 @@ jobs:
           ${HUNSPELL_SRC} = "${VCPKG_INSTALLED}/include"
           ${HUNSPELL_LIB} = "${VCPKG_INSTALLED}/lib"
           qmake "SpellChecker-Plugin\spellchecker.pro" "LOCAL_HUNSPELL_SRC_DIR=${HUNSPELL_SRC}" "LOCAL_HUNSPELL_LIB_DIR=${HUNSPELL_LIB}"
-          # & "${MAKE_CMD}"
+          & "${MAKE_CMD}"
