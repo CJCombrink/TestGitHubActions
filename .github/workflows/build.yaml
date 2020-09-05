@@ -87,8 +87,15 @@ jobs:
             ${QTC_7Z} = "${QTC_PACKAGE}.7z"
             ${QTC_URL} = "${QTC_BASE_URL}/installer_source/${{matrix.config.qtc_platform}}/${QTC_7Z}"
             Write-Output "  <-> URL: ${QTC_URL}"
-            ${QTC_URL_RESOLVED} = [System.Net.HttpWebRequest]::Create("${QTC_URL}").GetResponse().ResponseUri.AbsoluteUri
+            ${QTC_URL_RESOLVED} = ${QTC_URL}
+            try {
+                Invoke-WebRequest -Method HEAD ${QTC_URL} -MaximumRedirection 0 -ErrorAction Stop
+            } catch {
+                ${QTC_URL_RESOLVED} = $_.Exception.Response.Headers.Location
+            }
             Write-Output "  <-> Resolved URL: ${QTC_URL_RESOLVED}"
             Invoke-WebRequest -Uri "${QTC_URL_RESOLVED}" -OutFile "${QTC_7Z}"
+
+            Write-Output "  <-> Extracting archive"
             7z x "${QTC_7Z}" -aoa -o"qtcreator"
           }
