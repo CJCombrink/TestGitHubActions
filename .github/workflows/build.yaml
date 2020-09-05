@@ -108,6 +108,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: CJCombrink/SpellChecker-Plugin
+          path: SpellChecker-Plugin
 
       - name: Build Plugin
         shell: pwsh
@@ -123,7 +124,7 @@ jobs:
           }
 
           pwd
-          Get-ChildItem .
+          Get-ChildItem . | Format-Table
 
           # ${env:VCPKG_ROOT}/vcpkg list
 
