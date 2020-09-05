@@ -173,8 +173,9 @@ jobs:
                 New-Item -ItemType Directory "qtcreator/bin"
                 Write-Output "<+> Contents of qtcreator..."
                 Get-ChildItem qtcreator/ | Format-Table
+                Get-ChildItem "qtcreator/Qt Creator.app" | Format-Table
                 Write-Output "<+> Creating junction..."
-                New-Item -ItemType SymbolicLink -Name "${{github.workspace}}/qtcreator/bin/Qt Creator.app" -Value "${{github.workspace}}/qtcreator/Qt Creator.app"
+                New-Item -ItemType SymbolicLink -Value "${{github.workspace}}/qtcreator/bin/Qt Creator.app" -Name "${{github.workspace}}/qtcreator/Qt Creator.app"
                 Write-Output "<+> Contents of bin folder..."
                 Get-ChildItem "qtcreator/bin" | Format-Table
                 Get-ChildItem "qtcreator/bin/Qt Creator.app" | Format-Table
