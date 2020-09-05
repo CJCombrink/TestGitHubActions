@@ -124,7 +124,7 @@ jobs:
                   ${VS_INST_PATH} = & "${env:ProgramFiles(x86)}/Microsoft Visual Studio/Installer/vswhere.exe" -latest -property installationPath
                   Write-Output "  <-> VS Install Path: ${VS_INST_PATH}"
                   Import-Module ${VS_INST_PATH}/Common7/Tools/Microsoft.VisualStudio.DevShell.dll
-                  Enter-VsDevShell -VS_INST_PATH $VS_INST_PATH -SkipAutomaticLocation
+                  Enter-VsDevShell -VsInstallPath ${VS_INST_PATH} -SkipAutomaticLocation
                   ${MAKE_CMD} = "${env:QTC_BIN_DIR}/jom"
               }
               Default {
