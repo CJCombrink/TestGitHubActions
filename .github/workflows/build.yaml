@@ -118,9 +118,11 @@ jobs:
                   ${MAKE_CMD} = "${env:QTC_BIN_DIR}/jom"
               }
               Default {
-                  ${MAKE_CMD} = make
+                  ${MAKE_CMD} = "make"
               }
           }
+
+          $VCPKG_ROOT/vcpkg list
 
           Write-Output "VCPKG_ROOT: ${env:VCPKG_ROOT}"
           Get-ChildItem "${env:VCPKG_ROOT}"
