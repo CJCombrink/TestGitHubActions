@@ -155,11 +155,11 @@ jobs:
                   Write-Output "  <-> VS Install Path: ${VS_INST_PATH}"
                   Import-Module ${VS_INST_PATH}/Common7/Tools/Microsoft.VisualStudio.DevShell.dll
                   Enter-VsDevShell -VsInstallPath ${VS_INST_PATH} -SkipAutomaticLocation
-                  ${MAKE_CMD} = "${env:QTC_BIN_DIR}/jom"
+                  ${MAKE_CMD} = "${env:JOM_DIR}/jom"
               }
               Default {
                   ${MAKE_CMD} = "make"
-                  ${QMAKE_EXTRA_ARGS} = "HUNSPELL_STATIC_LIB=$${HUNSPELL_LIB}/liblibhunspell.a"
+                  ${QMAKE_EXTRA_ARGS} = "HUNSPELL_STATIC_LIB=${HUNSPELL_LIB}/liblibhunspell.a"
               }
           }
 
