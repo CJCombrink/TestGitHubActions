@@ -111,9 +111,13 @@ jobs:
                   ${MAKE_CMD} = "${env:QTC_BIN_DIR}/jom"
               }
               Default {
-                  ${PROCS} = (Get-CimInstance Win32_ComputerSystem).NumberOfLogicalProcessors
-                  ${MAKE_CMD} = make -j ${PROCS}
+                  ${MAKE_CMD} = make
               }
           }
 
           & ${MAKE_CMD} --version
+
+        - name: Checkout Plugin
+          uses: actions/checkout@v2
+          with:
+            repository: CJCombrink/SpellChecker-Plugin
