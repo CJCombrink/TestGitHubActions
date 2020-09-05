@@ -76,7 +76,7 @@ jobs:
       - name: Donwload Qt Creator
         shell: pwsh
         run: |
-          $PSVersionTable
+#          $PSVersionTable
           ${QTC_BASE_URL} = "https://download.qt.io/official_releases/qtcreator/${env:QT_CREATOR_VERSION}/${env:QT_CREATOR_VERSION}.0"
 
           function Get-RedirectedUri {
@@ -163,10 +163,14 @@ jobs:
           switch ("${{runner.os}}")
           {
               "Windows" {
-                  Write-Output "<+> Getting jom"
-                  ${JOM_URL} = "http://download.qt.io/official_releases/jom/jom_1_1_3.zip"
-                  Get-Archive -url "${JOM_URL}" -archive "jom.zip" -extracted "jom"
-                  Write-Output "::set-env name=JOM_DIR::${{github.workspace}}/jom"
+                Write-Output "<+> Getting jom"
+                ${JOM_URL} = "https://download.qt.io/official_releases/jom/jom_1_1_3.zip"
+                Get-Archive -url "${JOM_URL}" -archive "jom.zip" -extracted "jom"
+                Write-Output "::set-env name=JOM_DIR::${{github.workspace}}/jom"
+              }
+              "macOS" {
+                New-Item -Type File "qtcreator/bin"
+                New-Item -ItemType SymbolicLink -Name "${{github.workspace}}/qtcreator/bin/Qt Creator.app" -Target "${{github.workspace}}/qtcreator/Qt Creator.app"
               }
               Default {}
           }
