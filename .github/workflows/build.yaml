@@ -85,23 +85,37 @@ jobs:
           $PSVersionTable
           ${QTC_BASE_URL} = "https://download.qt.io/official_releases/qtcreator/${env:QT_CREATOR_VERSION}/${env:QT_CREATOR_VERSION}.0"
 
+          function Get-Archive {
+            param (
+                [Parameter(Mandatory)]
+                [string]${url},
+                [Parameter(Mandatory)]
+                [string]${archive},
+                [Parameter(Mandatory)]
+                [string]${extracted}
+            )
+
+            Write-Output "<+> Downloading Archive: ${archive}"
+            ${URL_RESOLVED} = ${url}
+            Write-Output "  <-> URL: ${URL_RESOLVED}"
+            try {
+                Invoke-WebRequest -Method HEAD ${URL_RESOLVED} -MaximumRedirection 0 -ErrorAction Stop
+            } catch {
+                ${URL_RESOLVED} = $_.Exception.Response.Headers.Location
+            }
+            Write-Output "  <-> Resolved URL: ${URL_RESOLVED}"
+            Invoke-WebRequest -Uri "${URL_RESOLVED}" -OutFile "${archive}"
+            Write-Output "  <-> Extracting archive"
+            7z x "${archive}" -aoa -o"${extracted}"
+            Write-Output "  <-> Done"
+          }
+
           ${QTC_PACKAGES} = "qtcreator", "qtcreator_dev"
           foreach (${QTC_PACKAGE} in ${QTC_PACKAGES}) {
             Write-Output "<+> Downloading Package: ${QTC_PACKAGE}"
-            ${QTC_7Z} = "${QTC_PACKAGE}.7z"
+            ${QTC_7Z}  = "${QTC_PACKAGE}.7z"
             ${QTC_URL} = "${QTC_BASE_URL}/installer_source/${{matrix.config.qtc_platform}}/${QTC_7Z}"
-            Write-Output "  <-> URL: ${QTC_URL}"
-            ${QTC_URL_RESOLVED} = ${QTC_URL}
-            try {
-                Invoke-WebRequest -Method HEAD ${QTC_URL} -MaximumRedirection 0 -ErrorAction Stop
-            } catch {
-                ${QTC_URL_RESOLVED} = $_.Exception.Response.Headers.Location
-            }
-            Write-Output "  <-> Resolved URL: ${QTC_URL_RESOLVED}"
-            Invoke-WebRequest -Uri "${QTC_URL_RESOLVED}" -OutFile "${QTC_7Z}"
-
-            Write-Output "  <-> Extracting archive"
-            7z x "${QTC_7Z}" -aoa -o"qtcreator"
+            Get-Archive -url "${QTC_URL}" -archive "${QTC_7Z}" -extracted "qtcreator"
           }
 
           Write-Output "::set-env name=QTC_BIN_DIR::${{github.workspace}}/qtcreator/bin"
