@@ -50,12 +50,14 @@ jobs:
 
       - name: Test MSBuild
         if: runner.os == 'Windows'
+        shell: pwsh
         run: |
           msbuild -version
           cl
 
       - name: Test Make
         if: runner.os != 'Windows'
+        shell: pwsh
         run: |
           make --version
 
