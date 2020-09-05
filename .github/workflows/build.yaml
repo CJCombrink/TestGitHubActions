@@ -116,6 +116,17 @@ jobs:
           Write-Output "::set-env name=QTC_SOURCE::${{github.workspace}}/qtcreator"
           Write-Output "::set-env name=QTC_BUILD::${{github.workspace}}/qtcreator"
 
+          switch ("${{runner.os}}")
+          {
+              "Windows" {
+                  Write-Output "<+> Getting jom"
+                  ${JOM_URL} = "http://download.qt.io/official_releases/jom/jom_1_1_3.zip"
+                  Get-Archive -url "${JOM_URL}" -archive "jom.zip" -extracted "jom"
+                  Write-Output "::set-env name=JOM_DIR::${{github.workspace}}/jom"
+              }
+              Default {}
+          }
+
       - name: Install Qt
         uses: jurplel/install-qt-action@v2
         with:
