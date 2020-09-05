@@ -108,7 +108,7 @@ jobs:
           switch ("${{runner.os}}")
           {
               "Windows" {
-                  ${MAKE_CMD} = "${env:QTC_BIN_DIR}/jom
+                  ${MAKE_CMD} = "${env:QTC_BIN_DIR}/jom"
               }
               Default {
                   ${PROCS} = (Get-CimInstance Win32_ComputerSystem).NumberOfLogicalProcessors
