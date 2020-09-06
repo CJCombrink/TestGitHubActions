@@ -264,7 +264,7 @@ jobs:
         if: contains(github.ref, '/tags/v')
         uses: actions/download-artifact@v1
         with:
-          name: release_upload_url
+          name: release_upload_url.txt
           path: ./
 
       - name: Set Release Var
