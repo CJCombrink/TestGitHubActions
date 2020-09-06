@@ -169,15 +169,8 @@ jobs:
                 Write-Output "::set-env name=JOM_DIR::${{github.workspace}}/jom"
               }
               "macOS" {
-                Write-Output "<+> Creating bin folder..."
                 New-Item -ItemType Directory "qtcreator/bin"
-                Write-Output "<+> Contents of qtcreator..."
-                Get-ChildItem qtcreator/ | Format-Table
-                Write-Output "<+> Creating junction..."
                 New-Item -ItemType SymbolicLink -Path "${{github.workspace}}/qtcreator/bin/Qt Creator.app" -Target "${{github.workspace}}/qtcreator/Qt Creator.app"
-                Write-Output "<+> Contents of bin folder..."
-                Get-ChildItem "qtcreator/bin" | Format-Table
-                Get-ChildItem "qtcreator/bin/Qt Creator.app" | Format-Table
               }
               Default {}
           }
@@ -200,6 +193,7 @@ jobs:
           ${VCPKG_INSTALLED} = "${env:VCPKG_ROOT}/installed/${{matrix.config.arch}}-${{matrix.config.sys}}"
           ${HUNSPELL_SRC} = "${VCPKG_INSTALLED}/include"
           ${HUNSPELL_LIB} = "${VCPKG_INSTALLED}/lib"
+          Write-Output "::set-env name=VCPKG_INSTALLED_DIR::${VCPKG_INSTALLED}"
 
           switch ("${{runner.os}}")
           {
@@ -210,7 +204,6 @@ jobs:
                   Write-Output "  <-> VS Install Path: ${VS_INST_PATH}"
                   Import-Module ${VS_INST_PATH}/Common7/Tools/Microsoft.VisualStudio.DevShell.dll
                   Enter-VsDevShell -VsInstallPath ${VS_INST_PATH} -SkipAutomaticLocation -DevCmdArguments '-arch=${{matrix.config.arch}} -no_logo'
-                  cl
                   ${MAKE_CMD} = "${env:JOM_DIR}/jom"
               }
               Default {
@@ -224,3 +217,47 @@ jobs:
 
           qmake "SpellChecker-Plugin\spellchecker.pro" "LOCAL_HUNSPELL_SRC_DIR=${HUNSPELL_SRC}" "LOCAL_HUNSPELL_LIB_DIR=${HUNSPELL_LIB}" ${QMAKE_EXTRA_ARGS}
           & "${MAKE_CMD}"
+
+      - name: Collect Binaries
+        shell: pwsh
+        run: |
+          ${PLUGIN_DIR_BASE} = "Plugin/"
+          ${PLUGIN_ARCHIVE}  = "SpellChecker-Plugin_QtC${env:QT_CREATOR_VERSION}_${env:OS}_${{matrix.config.arch}}"
+
+          switch ("${{runner.os}}")
+          {
+              "Windows" {
+                ${PLUGIN_DIR_OUT} = "${PLUGIN_DIR_BASE}/lib/qtcreator/plugins"
+                ${PLUGIN_DIR_BIN} = "${PLUGIN_DIR_BASE}/bin/"
+                New-Item -ItemType Directory "${PLUGIN_DIR_OUT}" -Force
+                New-Item -ItemType Directory "${PLUGIN_DIR_BIN}" -Force
+                Copy-Item -Path "${env:QTC_BUILD}/lib/qtcreator/plugins/SpellChecker4.dll" -Destination "${PLUGIN_DIR_OUT}/"
+                Copy-Item -Path "${{VCPKG_INSTALLED_DIR}}/bin/libhunspell.dll" -Destination "${PLUGIN_DIR_BIN}/"
+                Push-Location ${PLUGIN_DIR_BASE}
+                7z a "${PLUGIN_ARCHIVE}.zip" bin lib
+                Pop-Location
+                ${PLUGIN_ARCHIVE} = "${PLUGIN_DIR_BASE}/${PLUGIN_ARCHIVE}.zip"
+              }
+              "Linux" {
+                ${PLUGIN_DIR_OUT} = "${PLUGIN_DIR_BASE}/lib/qtcreator/plugins"
+                New-Item -ItemType Directory "${PLUGIN_DIR_OUT}" -Force
+                Copy-Item -Path "${env:QTC_BUILD}/lib/qtcreator/plugins/libSpellChecker.so" -Destination "${PLUGIN_DIR_OUT}/"
+                Push-Location ${PLUGIN_DIR_BASE}
+                7z a -ttar "${PLUGIN_ARCHIVE}.tar" lib
+                7z a -tgzip "${PLUGIN_ARCHIVE}.tar.gz" "${PLUGIN_ARCHIVE}.tar"
+                Pop-Location
+                ${PLUGIN_ARCHIVE} = "${PLUGIN_DIR_BASE}/${PLUGIN_ARCHIVE}.tar.gz"
+              }
+              "macOS" {
+                ${PLUGIN_DIR_OUT} = "${PLUGIN_DIR_BASE}/bin/Qt Creator.app/Contents/PlugIns"
+                New-Item -ItemType Directory "${PLUGIN_DIR_OUT}" -Force
+                Copy-Item -Path "${env:QTC_BUILD}/bin/Qt Creator.app/Contents/PlugIns/libSpellChecker.dylib" -Destination "${PLUGIN_DIR_OUT}/"
+                Push-Location ${PLUGIN_DIR_BASE}
+                7z a -ttar "${PLUGIN_ARCHIVE}.tar" lib
+                7z a -tgzip "${PLUGIN_ARCHIVE}.tar.gz" "${PLUGIN_ARCHIVE}.tar"
+                Pop-Location
+                ${PLUGIN_ARCHIVE} = "${PLUGIN_DIR_BASE}/${PLUGIN_ARCHIVE}.tar.gz"
+              }
+
+              Write-Output "::set-env name=VCPKG_INSTALLED_DIR::${VCPKG_INSTALLED}"
+          }
