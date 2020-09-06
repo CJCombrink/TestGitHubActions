@@ -12,7 +12,34 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
+  release:
+    name: Create release
+    if: contains(github.ref, '/tags/v')
+    runs-on: ubuntu-16.04
+    steps:
+      - name: Create release
+        if: contains(github.ref, '/tags/')
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Store release url
+        shell: pwsh
+        run: Write-Output "${{ steps.create_release.outputs.upload_url }}" > ./release_upload_url.txt
+
+      - name: Upload release url
+        uses: actions/upload-artifact@v1
+        with:
+          path: ./release_upload_url.txt
+          name: release_upload_url.txt
+
+  #
   build:
     name: Build ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
@@ -269,3 +296,29 @@ jobs:
         with:
           path: ${{env.PLUGIN_ARCHIVE_FULL}}
           name: ${{env.PLUGIN_ARCHIVE_NAME}}
+
+      - name: Download release url
+        if: contains(github.ref, '/tags/v')
+        uses: actions/download-artifact@v1
+        with:
+          name: release_upload_url
+          path: ./
+
+      - name: Set Release Var
+        if: contains(github.ref, '/tags/v')
+        shell: pwsh
+        run: |
+          ${RELEASE_URL} = Get-Content ./release_upload_url.txt
+          Write-Output "Release URL: ${RELEASE_URL}"
+          Write-Output "::set-env name=RELEASE_URL::${RELEASE_URL}""
+
+      - name: Upload release artifacts
+        if: contains(github.ref, '/tags/v')
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{env.RELEASE_URL}}
+          asset_path: ${{env.PLUGIN_ARCHIVE_FULL}}
+          asset_name: ${{env.PLUGIN_ARCHIVE_NAME}}
+          asset_content_type: application/zip
