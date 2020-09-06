@@ -236,7 +236,7 @@ jobs:
                 Push-Location ${PLUGIN_DIR_BASE}
                 7z a "${PLUGIN_ARCHIVE}.zip" bin lib
                 Pop-Location
-                ${PLUGIN_ARCHIVE} = "${PLUGIN_DIR_BASE}/${PLUGIN_ARCHIVE}.zip"
+                ${env:PLUGIN_ARCHIVE} = "${PLUGIN_DIR_BASE}/${PLUGIN_ARCHIVE}.zip"
               }
               "Linux" {
                 ${PLUGIN_DIR_OUT} = "${PLUGIN_DIR_BASE}/lib/qtcreator/plugins"
@@ -246,7 +246,7 @@ jobs:
                 7z a -ttar "${PLUGIN_ARCHIVE}.tar" lib
                 7z a -tgzip "${PLUGIN_ARCHIVE}.tar.gz" "${PLUGIN_ARCHIVE}.tar"
                 Pop-Location
-                ${PLUGIN_ARCHIVE} = "${PLUGIN_DIR_BASE}/${PLUGIN_ARCHIVE}.tar.gz"
+                ${env:PLUGIN_ARCHIVE} = "${PLUGIN_DIR_BASE}/${PLUGIN_ARCHIVE}.tar.gz"
               }
               "macOS" {
                 ${PLUGIN_DIR_OUT} = "${PLUGIN_DIR_BASE}/bin/Qt Creator.app/Contents/PlugIns"
@@ -256,14 +256,14 @@ jobs:
                 7z a -ttar "${PLUGIN_ARCHIVE}.tar" lib
                 7z a -tgzip "${PLUGIN_ARCHIVE}.tar.gz" "${PLUGIN_ARCHIVE}.tar"
                 Pop-Location
-                ${PLUGIN_ARCHIVE} = "${PLUGIN_DIR_BASE}/${PLUGIN_ARCHIVE}.tar.gz"
+                ${env:PLUGIN_ARCHIVE} = "${PLUGIN_DIR_BASE}/${PLUGIN_ARCHIVE}.tar.gz"
               }
 
-              Write-Output "::set-env name=PLUGIN_ARCHIVE::${{github.workspace}}/${PLUGIN_ARCHIVE}"
+              Write-Output "::set-env name=PLUGIN_ARCHIVE::${{github.workspace}}/${env:PLUGIN_ARCHIVE}"
           }
 
       - uses: actions/upload-artifact@v1
         id: upload_artifact
         with:
-          path: ${{ PLUGIN_ARCHIVE }}
-          name: ${{ PLUGIN_ARCHIVE }}
+          path: ${env:PLUGIN_ARCHIVE}
+          name: ${env:PLUGIN_ARCHIVE}
