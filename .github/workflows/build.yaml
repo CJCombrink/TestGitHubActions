@@ -232,7 +232,7 @@ jobs:
                 New-Item -ItemType Directory "${PLUGIN_DIR_OUT}" -Force
                 New-Item -ItemType Directory "${PLUGIN_DIR_BIN}" -Force
                 Copy-Item -Path "${env:QTC_BUILD}/lib/qtcreator/plugins/SpellChecker4.dll" -Destination "${PLUGIN_DIR_OUT}/"
-                Copy-Item -Path "${{VCPKG_INSTALLED_DIR}}/bin/libhunspell.dll" -Destination "${PLUGIN_DIR_BIN}/"
+                Copy-Item -Path "${env:VCPKG_INSTALLED_DIR}/bin/libhunspell.dll" -Destination "${PLUGIN_DIR_BIN}/"
                 Push-Location ${PLUGIN_DIR_BASE}
                 7z a "${PLUGIN_ARCHIVE}.zip" bin lib
                 Pop-Location
